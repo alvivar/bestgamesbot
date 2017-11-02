@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 import sys
 import time
 
@@ -72,8 +73,9 @@ if __name__ == "__main__":
         platforms = (win + mac + lin + web + android).strip()
         platforms_title = platforms.replace(" ", ", ")
 
-        tags = v['author'].split() + v['title'].split() + platforms.split()
-        tags = [t.strip().lower() for t in tags]
+        tags = f"{v['author']} {v['title']} {platforms}"
+        tags = re.split("[^0-9a-zA-Z]", tags)
+        tags = [t.lower() for t in tags if t]
 
         title = f"[{v['title']}]({k}) ([{v['author']}]({v['author_url']}))"
 
@@ -86,7 +88,8 @@ if __name__ == "__main__":
             f"# {title}\n\n## {v['description']}\n\n### [{price}]({k}) ({platforms_title})",
             source=f"{v['gif'] if v['gif'] else v['image']}")
 
-        print(f"New game added: {k}")
+        print(f"New game found: {k}")
+
         DONE.append(k)
         with open(DONE_FILE, "w") as f:
             json.dump(DONE, f)
