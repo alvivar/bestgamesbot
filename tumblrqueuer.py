@@ -95,4 +95,4 @@ if __name__ == "__main__":
             json.dump(DONE, f)
 
     print(f"\nAll done! ({round(time.time()-DELTA)}s)")
-    input()
+    input("OK?")
