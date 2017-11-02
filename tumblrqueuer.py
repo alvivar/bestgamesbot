@@ -12,7 +12,7 @@ import pytumblr
 if __name__ == "__main__":
 
     DELTA = time.time()
-    print("bestgamesintheplanet.tumblr.com [Bot]\n")
+    print("bestgamesintheplanet [Bot]\n")
 
     # frozen / not frozen, cxfreeze compatibility
     DIR = os.path.normpath(
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     try:
         DONE = json.load(open(DONE_FILE, 'r'))
     except (IOError, ValueError):
-        DONE = []
+        DONE = {}
 
     # Queue new games
     GAMES = itchioscrapper.get_games()
@@ -63,6 +63,7 @@ if __name__ == "__main__":
 
     for k, v in GAMES.items():
 
+        title = f"[{v['title']}]({k}) ([{v['author']}]({v['author_url']}))"
         price = f"Buy it for {v['price']}" if v['price'] else "Free to play"
 
         win = "Windows " if v['windows'] else ""
@@ -73,27 +74,26 @@ if __name__ == "__main__":
 
         platforms = (win + mac + lin + web + android).strip()
         platforms_title = platforms.replace(" ", ", ")
+        platforms_title = f"({platforms_title})" if platforms_title else ""
 
         tags = f"{v['author']} {v['title']} {platforms}"
         tags = re.split("[^0-9a-zA-Z]", tags)
         tags = [t.lower() for t in tags if t]
 
-        title = f"[{v['title']}]({k}) ([{v['author']}]({v['author_url']}))"
-
-        API.create_photo(
+        result = API.create_photo(
             "bestgamesintheplanet",
             state="queue",
             tags=["indie", "games", "itchio"] + tags,
             format="markdown",
             caption=
-            f"# {title}\n\n## {v['description']}\n\n### [{price}]({k}) ({platforms_title})",
+            f"# {title}\n\n## {v['description']}\n\n### [{price}]({k}) {platforms_title}",
             source=f"{v['gif'] if v['gif'] else v['image']}")
 
-        print(f"New: {k}")
-
-        DONE.append(k)
-        with open(DONE_FILE, "w") as f:
-            json.dump(DONE, f)
+        if result:
+            print(f"New: {k}")
+            DONE[k] = v
+            with open(DONE_FILE, "w") as f:
+                json.dump(DONE, f)
 
     COUNT = len(GAMES)
     print(
