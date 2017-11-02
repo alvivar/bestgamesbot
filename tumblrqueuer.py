@@ -37,9 +37,9 @@ if __name__ == "__main__":
             json.dump(TOKENS, f)
 
     if not TOKENS['consumer_key']:
-        print(
-            f"Tumblr tokens are needed! Fill out {TOKENS_FILE}\nAnd try again..."
-        )
+        print(f"I need your Tumblr API tokens!"
+              f"Write them in {TOKENS_FILE} and try again.")
+        input("OK?")
         sys.exit(0)
 
     # Tumblr connection
@@ -94,5 +94,5 @@ if __name__ == "__main__":
         with open(DONE_FILE, "w") as f:
             json.dump(DONE, f)
 
-    print(f"\nAll done! ({round(time.time()-DELTA)}s)")
+    print(f"Done! ({round(time.time()-DELTA)}s)")
     input("OK?")
