@@ -38,7 +38,7 @@ if __name__ == "__main__":
             json.dump(TOKENS, f)
 
     if not TOKENS['consumer_key']:
-        print(f"I need your Tumblr API tokens!"
+        print(f"I need your Tumblr API tokens!\n"
               f"Write them in {TOKENS_FILE} and try again.")
         input("OK?")
         sys.exit(0)
