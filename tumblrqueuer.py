@@ -12,6 +12,7 @@ import pytumblr
 if __name__ == "__main__":
 
     DELTA = time.time()
+    print("bestgamesintheplanet.tumblr.com [Bot]\n")
 
     # frozen / not frozen, cxfreeze compatibility
     DIR = os.path.normpath(
@@ -88,11 +89,14 @@ if __name__ == "__main__":
             f"# {title}\n\n## {v['description']}\n\n### [{price}]({k}) ({platforms_title})",
             source=f"{v['gif'] if v['gif'] else v['image']}")
 
-        print(f"New game found: {k}")
+        print(f"New: {k}")
 
         DONE.append(k)
         with open(DONE_FILE, "w") as f:
             json.dump(DONE, f)
 
-    print(f"Done! ({round(time.time()-DELTA)}s)")
+    COUNT = len(GAMES)
+    print(
+        f"{COUNT} game{'s' if COUNT != 1 else ''} found ({round(time.time()-DELTA)}s)"
+    )
     input("OK?")

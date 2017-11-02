@@ -15,6 +15,6 @@ EXECUTABLES = [Executable('tumblrqueuer.py', targetName='bestgamesbot.exe')]
 setup(
     name='bestgamesbot',
     version='0.1',
-    description="Itch.io & Tumblr Bot",
+    description="bestgamesintheplanet.tumblr.com [Bot]",
     executables=EXECUTABLES,
     options=OPTIONS)
