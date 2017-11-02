@@ -74,7 +74,7 @@ if __name__ == "__main__":
 
     GAMES = get_games()
 
-    with open("itchio-games.json", "w") as f:
+    with open("games.json", "w") as f:
         json.dump(GAMES, f)
 
     print(f"Done! ({round(time.time()-DELTA)}s)")
