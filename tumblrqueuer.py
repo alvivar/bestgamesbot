@@ -1,4 +1,4 @@
-""" Script that queues Tumblr posts from the Itch.io scrapper. """
+""" Script that queues Tumblr posts from the Itch.io scrapper data. """
 
 import json
 import os
