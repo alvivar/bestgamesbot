@@ -56,7 +56,8 @@ def get_games():
             'mac': True if mac else False,
             'linux': True if linux else False,
             'web': True if web else False,
-            'android': True if android else False
+            'android': True if android else False,
+            'time': time.time()
         }
 
     return games
