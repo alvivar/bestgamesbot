@@ -61,10 +61,8 @@ if __name__ == "__main__":
     GAMES = itchioscrapper.get_games()
     GAMES = {k: v for k, v in GAMES.items() if k not in DONE}
 
+    # The game url is the 'k'ey
     for k, v in GAMES.items():
-
-        title = f"[{v['title']}]({k}) ([{v['author']}]({v['author_url']}))"
-        price = f"Buy it for {v['price']}" if v['price'] else "Free to play"
 
         win = "Windows " if v['windows'] else ""
         mac = "Mac " if v['mac'] else ""
@@ -80,13 +78,19 @@ if __name__ == "__main__":
         tags = re.split("[^0-9a-zA-Z]", tags)
         tags = [t.lower() for t in tags if t]
 
+        title = f"# [{v['title']}]({k}) ([{v['author']}]({v['author_url']}))\n\n"
+        description = f"## {v['description']}\n\n" if v['description'] else ""
+
+        price_title = f"Buy it for {v['price']}" if v[
+            'price'] else "Free to play"
+        price = f"### [{price_title}]({k}) {platforms_title}"
+
         result = API.create_photo(
             "bestgamesintheplanet",
             state="queue",
             tags=["indie", "games", "itchio"] + tags,
             format="markdown",
-            caption=
-            f"# {title}\n\n## {v['description']}\n\n### [{price}]({k}) {platforms_title}",
+            caption=f"{title}{description}{price}",
             source=f"{v['gif'] if v['gif'] else v['image']}")
 
         if result:
