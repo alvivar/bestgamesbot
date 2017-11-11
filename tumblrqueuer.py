@@ -77,6 +77,8 @@ if __name__ == "__main__":
         tags = f"{v['author']} {v['title']} {platforms}"
         tags = re.split("[^0-9a-zA-Z]", tags)
         tags = [t.lower() for t in tags if t]
+        giftag = ["gif"] if v['gif'] else []
+        tags = ["videogame", "indiegame", "gaming", "itchio"] + giftag + tags
 
         title = f"# [{v['title']}]({k}) ([{v['author']}]({v['author_url']}))\n\n"
         description = f"## {v['description']}\n\n" if v['description'] else ""
@@ -88,7 +90,7 @@ if __name__ == "__main__":
         result = API.create_photo(
             "bestgamesintheplanet",
             state="queue",
-            tags=["indie", "games", "itchio"] + tags,
+            tags=tags,
             format="markdown",
             caption=f"{title}{description}{price}",
             source=f"{v['gif'] if v['gif'] else v['image']}")
@@ -99,6 +101,7 @@ if __name__ == "__main__":
             with open(DONE_FILE, "w") as f:
                 json.dump(DONE, f)
 
+    # Info log
     COUNT = len(GAMES)
     print(
         f"{COUNT} game{'s' if COUNT != 1 else ''} found ({round(time.time()-DELTA)}s)"
