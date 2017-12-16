@@ -14,10 +14,10 @@ def chunker(seq, size):
     return [seq[pos:pos + size] for pos in range(0, len(seq), size)]
 
 
-def get_games():
-    """ Returns a dictionary with all the games data. """
+def get_games(url):
+    """ Returns a dictionary with all the games data from the games directory
+    and search result page. """
 
-    url = "https://itch.io/games"
     headers = {
         'User-Agent':
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
@@ -35,7 +35,14 @@ def get_games():
         author_url = data.find("div", "game_author").a['href']
         price = data.find("div", "price_value")
 
-        image = data.find("div", "game_thumb")['data-background_image']
+        image = data.find("div", "game_thumb")
+        if image.has_attr("data-background_image"):
+            # Normal itch.io browse
+            image = image['data-background_image']
+        else:
+            # On search result pages
+            image = image['style'].split("('")[1].split("')")[0]
+
         gif = data.find("div", "gif_overlay")
 
         windows = data.find("span", "icon-windows8")
@@ -65,15 +72,17 @@ def get_games():
 
 if __name__ == "__main__":
 
-    # frozen / not frozen, cxfreeze compatibility
+    DELTA = time.time()
+
+    # Frozen / not frozen, cxfreeze compatibility
     DIR = os.path.normpath(
         os.path.dirname(
             sys.executable if getattr(sys, 'frozen', False) else __file__))
     os.chdir(DIR)
 
-    DELTA = time.time()
-
-    GAMES = get_games()
+    # GAMES = get_games("https://itch.io/games")
+    GAMES = get_games(
+        r"https://itch.io/search?q=It%27s+Compiling%21+Querijn+Heijmans")
 
     with open("games.json", "w") as f:
         json.dump(GAMES, f)
