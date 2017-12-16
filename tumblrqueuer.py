@@ -58,7 +58,7 @@ if __name__ == "__main__":
         DONE = {}
 
     # Queue new games
-    GAMES = itchioscrapper.get_games()
+    GAMES = itchioscrapper.get_games("https://itch.io/games")
     GAMES = {k: v for k, v in GAMES.items() if k not in DONE}
 
     # The game url is the 'k'ey
