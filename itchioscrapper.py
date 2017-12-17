@@ -4,6 +4,7 @@ import json
 import os
 import sys
 import time
+import urllib.parse
 
 import requests
 from bs4 import BeautifulSoup
@@ -16,7 +17,7 @@ def chunker(seq, size):
 
 def get_games(url):
     """ Returns a dictionary with all the games data from the games directory
-    and search result page. """
+    or search result page on itch.io. """
 
     headers = {
         'User-Agent':
@@ -41,7 +42,8 @@ def get_games(url):
             image = image['data-background_image']
         else:
             # On search result pages
-            image = image['style'].split("('")[1].split("')")[0]
+            image = image['style'].split("('")[1].split("')")[0] if image[
+                'style'] else False
 
         gif = data.find("div", "gif_overlay")
 
@@ -70,6 +72,40 @@ def get_games(url):
     return games
 
 
+def find_games(search, *, filterkeys=[], url="https://itch.io/search?q="):
+    """ Search and return games, can also filter the result by key. """
+    clean_search = urllib.parse.quote_plus(search)
+    games = get_games(f"{url}{clean_search}")
+
+    if filterkeys:
+        filtered = {}
+        for k, v in games.items():
+            if k in filterkeys:
+                filtered[k] = v
+        games = filtered
+
+    return games
+
+
+def update_games(gamesdict):
+    """ Read a dictionary that contains itch.io games urls as keys, and return
+    another dictionary with the game data updated. """
+
+    limit = 10
+    updated = {}
+    for key, val in gamesdict.items():
+        print(f"Updating {key}")
+        game = find_games(f"{val['title']} {val['author']}", filterkeys=[key])
+        if game:
+            updated[key] = game[key]
+
+        limit -= 1
+        if limit <= 0:
+            break
+
+    return updated
+
+
 if __name__ == "__main__":
 
     DELTA = time.time()
@@ -81,8 +117,17 @@ if __name__ == "__main__":
     os.chdir(DIR)
 
     # GAMES = get_games("https://itch.io/games")
-    GAMES = get_games(
-        r"https://itch.io/search?q=It%27s+Compiling%21+Querijn+Heijmans")
+
+    # GAMES = find_games(
+    #     "Bum Bag Bangin' SeaDads",
+    #     filterkeys=["https://seadads.itch.io/bum-bag-bangin"])
+
+    OLDGAMES = json.load(
+        open(
+            r"C:\adros\code\python\bestgamesintheplanet\build\exe.win-amd64-3.6\done.json",
+            'r'))
+
+    GAMES = update_games(OLDGAMES)
 
     with open("games.json", "w") as f:
         json.dump(GAMES, f)
