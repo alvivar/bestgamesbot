@@ -61,7 +61,6 @@ if __name__ == "__main__":
     for key, val in NEW_Q.items():
 
         # Data
-
         win = "Windows " if val['windows'] else ""
         mac = "Mac " if val['mac'] else ""
         lin = "Linux " if val['linux'] else ""
@@ -79,18 +78,16 @@ if __name__ == "__main__":
         image = f"{val['gif'] if val['gif'] else val['image']}"
 
         # Download image
-
         imagename = os.path.basename(image)
         imagefile = os.path.normpath(os.path.join(DIR, IMAGEPATH, imagename))
 
         with urllib.request.urlopen(image) as rp, open(imagefile, 'wb') as of:
+            print(f"Downloading: {val['title']} {image}")
             shutil.copyfileobj(rp, of)
 
         # Queue
-
         QBOT['messages'].append({"text": text, "image": imagefile})
 
     # Update
-
     with open(QBOTJSON, "w") as f:
         json.dump(QBOT, f)
