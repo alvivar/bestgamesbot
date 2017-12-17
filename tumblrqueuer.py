@@ -14,15 +14,15 @@ if __name__ == "__main__":
     DELTA = time.time()
     print("bestgamesintheplanet [Bot]\n")
 
-    # frozen / not frozen, cxfreeze compatibility
+    # Frozen / not frozen, cxfreeze compatibility
     DIR = os.path.normpath(
         os.path.dirname(
             sys.executable if getattr(sys, 'frozen', False) else __file__))
-    os.chdir(DIR)
+    os.chdir(DIR)  # The current dir is the script one
 
     # Files
     TOKENS_FILE = "tokens.json"
-    DONE_FILE = "done.json"
+    DONE_FILE = "tumblr_done.json"
 
     # Tumblr tokens are mandatory
     try:
