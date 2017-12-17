@@ -8,6 +8,7 @@ import time
 
 import itchioscrapper
 import pytumblr
+import qbotqueuer
 
 if __name__ == "__main__":
 
@@ -22,7 +23,9 @@ if __name__ == "__main__":
 
     # Files
     TOKENS_FILE = "tokens.json"
-    DONE_FILE = "tumblr_done.json"
+    TUMBLR_DONE_FILE = "tumblr_done.json"
+    TWITTER_DONE_FILE = "twitter_done.json"
+    QBOT_FILE = "qbot.json"
 
     # Tumblr tokens are mandatory
     try:
@@ -53,7 +56,7 @@ if __name__ == "__main__":
 
     # Already queued games
     try:
-        DONE = json.load(open(DONE_FILE, 'r'))
+        DONE = json.load(open(TUMBLR_DONE_FILE, 'r'))
     except (IOError, ValueError):
         DONE = {}
 
@@ -98,8 +101,11 @@ if __name__ == "__main__":
         if result:
             print(f"New: {k}")
             DONE[k] = v
-            with open(DONE_FILE, "w") as f:
+            with open(TUMBLR_DONE_FILE, "w") as f:
                 json.dump(DONE, f)
+
+    # Queue on QBot
+    qbotqueuer.queue_games(TUMBLR_DONE_FILE, TWITTER_DONE_FILE, QBOT_FILE)
 
     # Info log
     COUNT = len(GAMES)
