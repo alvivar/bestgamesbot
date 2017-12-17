@@ -74,11 +74,18 @@ if __name__ == "__main__":
         price_title = f"Buy it for {val['price']}" if val[
             'price'] else "Free to play"
 
+        # Tweet account search TODO
+
+        # The message
         text = f"{val['title']} ({val['author']})\n{price_title} {platforms_title} {key}"
         image = f"{val['gif'] if val['gif'] else val['image']}"
 
         # Download image
-        imagename = os.path.basename(image)
+        name, ext = os.path.splitext(os.path.basename(image))
+        imagename = "".join(
+            c for c in f"{val['author']}_{val['title']}_{name}{ext}"
+            if c.isalnum() or c in ["_", "."]).strip()
+
         imagefile = os.path.normpath(os.path.join(DIR, IMAGEPATH, imagename))
 
         with urllib.request.urlopen(image) as rp, open(imagefile, 'wb') as of:
