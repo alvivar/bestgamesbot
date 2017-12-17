@@ -87,17 +87,18 @@ def find_games(search, *, filterkeys=[], url="https://itch.io/search?q="):
     return games
 
 
-def update_games(gamesdict):
+def update_games(gamesdict, *, limit=10):
     """ Read a dictionary that contains itch.io games urls as keys, and return
     another dictionary with the game data updated. """
 
-    limit = 10
     updated = {}
     for key, val in gamesdict.items():
-        print(f"Updating {key}")
-        game = find_games(f"{val['title']} {val['author']}", filterkeys=[key])
+        game = find_games(f"{val['title']}", filterkeys=[key])
         if game:
+            print(f"Updating: {key}")
             updated[key] = game[key]
+        else:
+            print(f"Not found: {key}")
 
         limit -= 1
         if limit <= 0:
@@ -116,15 +117,17 @@ if __name__ == "__main__":
             sys.executable if getattr(sys, 'frozen', False) else __file__))
     os.chdir(DIR)
 
+    # Tests
+
     # GAMES = get_games("https://itch.io/games")
 
     # GAMES = find_games(
-    #     "Bum Bag Bangin' SeaDads",
+    #     "Bum Bag Bangin'",
     #     filterkeys=["https://seadads.itch.io/bum-bag-bangin"])
 
     OLDGAMES = json.load(
         open(
-            r"C:\adros\code\python\bestgamesintheplanet\build\exe.win-amd64-3.6\done.json",
+            r"C:\adros\code\python\bestgamesintheplanet\build\exe.win-amd64-3.6\tumblr_done.json",
             'r'))
 
     GAMES = update_games(OLDGAMES)
