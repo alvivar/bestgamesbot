@@ -15,50 +15,54 @@ import shutil
 
 from itchioscrapper import update_games
 
-if __name__ == "__main__":
+
+def queue_games(tumblrjf,
+                twitterjf,
+                qbotjf,
+                *,
+                imagepath="images",
+                qbot_queue_size=10):
+    """ Queue the tumblr scrapped data into QBot, keeping a registry. 'jf'
+    parameters are mean to be json dictionary files. """
+
+    print("Queing Tumblr into QBot...")
 
     # Frozen / not frozen, cxfreeze compatibility
 
-    DIR = os.path.normpath(
+    cdir = os.path.normpath(
         os.path.dirname(
             sys.executable if getattr(sys, 'frozen', False) else __file__))
-    os.chdir(DIR)  # The current dir is the script home
+    os.chdir(cdir)  # The current dir is the script home
 
     # Files
 
-    TUMBLRJSON = "tumblr_done.json"
-    TWITTERJSON = "twitter_done.json"
-    QBOTJSON = r"C:\adros\code\python\bestgamesintheplanet\build\exe.win-amd64-3.6\qbot.json"
-
-    IMAGEPATH = "images"
-
-    if not os.path.exists(IMAGEPATH):
-        os.makedirs(IMAGEPATH)
+    if not os.path.exists(imagepath):
+        os.makedirs(imagepath)
 
     # Get new tweets from the tumblr queue
 
-    TUMBLR_Q = json.load(open(TUMBLRJSON, "r"))
+    tumblrq = json.load(open(tumblrjf, "r"))
 
     try:
-        TWITTER_Q = json.load(open(TWITTERJSON, "r"))
+        twitterq = json.load(open(twitterjf, "r"))
     except (IOError, ValueError):
-        TWITTER_Q = {}
+        twitterq = {}
 
-    NEW_Q = {k: v for k, v in TUMBLR_Q.items() if k not in TWITTER_Q}
-    NEW_Q = update_games(NEW_Q, limit=14)  # Fresh
+    newq = {k: v for k, v in tumblrq.items() if k not in twitterq}
+    newq = update_games(newq, limit=14)  # Fresh
 
     # Save queued
 
-    TWITTER_Q = {**TWITTER_Q, **NEW_Q}  # Old + new twitter queued
+    twitterq = {**twitterq, **newq}  # Old + new twitter queued
 
-    with open(TWITTERJSON, "w") as f:
-        json.dump(TWITTER_Q, f)
+    with open(twitterjf, "w") as f:
+        json.dump(twitterq, f)
 
     # Queue the new tweets on QBot
 
-    QBOT = json.load(open(QBOTJSON, "r"))
+    qbot = json.load(open(qbotjf, "r"))
 
-    for key, val in NEW_Q.items():
+    for key, val in newq.items():
 
         # Data
         win = "Windows " if val['windows'] else ""
@@ -74,7 +78,7 @@ if __name__ == "__main__":
         price_title = f"Buy it for {val['price']}" if val[
             'price'] else "Free to play"
 
-        # Tweet account search TODO
+        # Twitter account search TODO
 
         # The message
         text = f"{val['title']} ({val['author']})\n{price_title} {platforms_title} {key}"
@@ -86,15 +90,24 @@ if __name__ == "__main__":
             c for c in f"{val['author']}_{val['title']}_{name}{ext}"
             if c.isalnum() or c in ["_", "."]).strip()
 
-        imagefile = os.path.normpath(os.path.join(DIR, IMAGEPATH, imagename))
+        imagefile = os.path.normpath(os.path.join(cdir, imagepath, imagename))
 
         with urllib.request.urlopen(image) as rp, open(imagefile, 'wb') as of:
             print(f"Downloading: {val['title']} {image}")
             shutil.copyfileobj(rp, of)
 
         # Queue
-        QBOT['messages'].append({"text": text, "image": imagefile})
+        qbot['messages'].append({"text": text, "image": imagefile})
 
     # Update
-    with open(QBOTJSON, "w") as f:
-        json.dump(QBOT, f)
+    with open(qbotjf, "w") as f:
+        json.dump(qbot, f)
+
+
+if __name__ == "__main__":
+
+    TUMBLRJSON = "tumblr_done.json"
+    TWITTERJSON = "twitter_done.json"
+    QBOTJSON = r"C:\adros\code\python\bestgamesintheplanet\build\exe.win-amd64-3.6\qbot.json"
+
+    queue_games(TUMBLRJSON, TWITTERJSON, QBOTJSON)
