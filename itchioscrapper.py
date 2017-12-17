@@ -97,10 +97,10 @@ def update_games(gamesdict, *, limit=10):
         if game:
             print(f"Updating: {key}")
             updated[key] = game[key]
+            limit -= 1
         else:
             print(f"Not found: {key}")
 
-        limit -= 1
         if limit <= 0:
             break
 
@@ -119,18 +119,18 @@ if __name__ == "__main__":
 
     # Tests
 
-    # GAMES = get_games("https://itch.io/games")
+    GAMES = get_games("https://itch.io/games")
 
     # GAMES = find_games(
     #     "Bum Bag Bangin'",
     #     filterkeys=["https://seadads.itch.io/bum-bag-bangin"])
 
-    OLDGAMES = json.load(
-        open(
-            r"C:\adros\code\python\bestgamesintheplanet\build\exe.win-amd64-3.6\tumblr_done.json",
-            'r'))
+    # OLDGAMES = json.load(
+    #     open(
+    #         r"C:\adros\code\python\bestgamesintheplanet\build\exe.win-amd64-3.6\tumblr_done.json",
+    #         'r'))
 
-    GAMES = update_games(OLDGAMES)
+    # GAMES = update_games(OLDGAMES)
 
     with open("games.json", "w") as f:
         json.dump(GAMES, f)
