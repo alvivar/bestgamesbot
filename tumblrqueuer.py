@@ -1,4 +1,8 @@
-""" Script that queues Tumblr posts from the Itch.io scrapper data. """
+""" Script that queues Tumblr posts from the Itch.io scrapper data.
+
+    TODO
+    - Use twitter user on tumblr publication if available?
+"""
 
 import json
 import os
