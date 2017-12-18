@@ -16,12 +16,7 @@ import urllib.request
 from itchioscrapper import update_games
 
 
-def queue_games(tumblrjf,
-                twitterjf,
-                qbotjf,
-                *,
-                imagepath="images",
-                qbot_queue_size=10):
+def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images"):
     """ Queue the tumblr scrapped data into QBot, keeping a registry. 'jf'
     parameters are mean to be json dictionary files. """
 
@@ -89,10 +84,8 @@ def queue_games(tumblrjf,
         price_title = f"Buy it for {val['price']}" if val[
             'price'] else "Free to play"
 
-        # Twitter account search TODO
-
         # The message
-        text = f"{val['title']} ({val['author']})\n{price_title} {platforms_title} {key}"
+        text = f"{val['title']} ({val['twitter'] if val['twitter'] else val['author']})\n{price_title} {platforms_title} {key}"
         image = f"{val['gif'] if val['gif'] else val['image']}"
 
         # Download image

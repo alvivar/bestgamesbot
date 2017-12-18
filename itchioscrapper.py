@@ -34,6 +34,7 @@ def get_games(url):
         description = data.find("div", "game_text")
         author = data.find("div", "game_author").a.text
         author_url = data.find("div", "game_author").a['href']
+        twitter = get_twitter(author_url)
         price = data.find("div", "price_value")
 
         image = data.find("div", "game_thumb")
@@ -58,6 +59,7 @@ def get_games(url):
             'description': description.text if description else False,
             'author': author,
             'author_url': author_url,
+            'twitter': twitter if twitter else False,
             'price': price.text if price else False,
             'image': image,
             'gif': gif['data-gif'] if gif else False,
@@ -108,9 +110,22 @@ def update_games(gamesdict, *, limit=10):
     return updated
 
 
-def get_twitter():
-    """ Return the Twitter user name from an Itch.io/user page. """
-    pass
+def get_twitter(url):
+    """ Return the Twitter user name from an itch.io/user page. """
+
+    headers = {
+        'User-Agent':
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
+    }
+    page = requests.get(url, headers=headers)
+    soup = BeautifulSoup(page.content, "html.parser")
+
+    for data in soup.find_all("span", "link_group"):
+        for a in data.find_all("a"):
+            if "twitter.com" in a["href"]:
+                return a.text.strip()
+
+    return None
 
 
 if __name__ == "__main__":
@@ -125,7 +140,7 @@ if __name__ == "__main__":
 
     # Tests
 
-    GAMES = get_games("https://itch.io/games")
+    # GAMES = get_games("https://itch.io/games")
 
     # GAMES = find_games(
     #     "Bum Bag Bangin'",
@@ -138,7 +153,9 @@ if __name__ == "__main__":
 
     # GAMES = update_games(OLDGAMES)
 
-    with open("games.json", "w") as f:
-        json.dump(GAMES, f)
+    # with open("games.json", "w") as f:
+    # json.dump(GAMES, f)
+
+    print(get_twitter("https://matnesis.itch.io/"))
 
     print(f"Done! ({round(time.time()-DELTA)}s)")
