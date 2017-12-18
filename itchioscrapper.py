@@ -93,6 +93,10 @@ def update_games(gamesdict, *, limit=10):
 
     updated = {}
     for key, val in gamesdict.items():
+
+        if limit <= 0:
+            break
+
         game = find_games(f"{val['title']}", filterkeys=[key])
         if game:
             print(f"Updating: {key}")
@@ -101,10 +105,12 @@ def update_games(gamesdict, *, limit=10):
         else:
             print(f"Not found: {key}")
 
-        if limit <= 0:
-            break
-
     return updated
+
+
+def get_twitter():
+    """ Return the Twitter user name from an Itch.io/user page. """
+    pass
 
 
 if __name__ == "__main__":
