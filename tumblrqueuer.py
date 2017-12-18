@@ -104,12 +104,13 @@ if __name__ == "__main__":
             with open(TUMBLR_DONE_FILE, "w") as f:
                 json.dump(DONE, f)
 
-    # Queue on QBot
-    qbotqueuer.queue_games(TUMBLR_DONE_FILE, TWITTER_DONE_FILE, QBOT_FILE)
-
     # Info log
     COUNT = len(GAMES)
     print(
-        f"{COUNT} game{'s' if COUNT != 1 else ''} found ({round(time.time()-DELTA)}s)"
+        f"{COUNT} game{'s' if COUNT != 1 else ''} found ({round(time.time()-DELTA)}s)\n"
     )
-    input("OK?")
+
+    # Queue on QBot
+    qbotqueuer.queue_games(TUMBLR_DONE_FILE, TWITTER_DONE_FILE, QBOT_FILE)
+
+    input("\nOK?")
