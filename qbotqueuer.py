@@ -8,10 +8,10 @@ image/gif into a folder as this is needed for the tweet to work. """
 
 import json
 import os
-import sys
-
-import urllib.request
 import shutil
+import sys
+import time
+import urllib.request
 
 from itchioscrapper import update_games
 
@@ -25,6 +25,7 @@ def queue_games(tumblrjf,
     """ Queue the tumblr scrapped data into QBot, keeping a registry. 'jf'
     parameters are mean to be json dictionary files. """
 
+    delta = time.time()
     print("Queing Tumblr into QBot...")
 
     # Frozen / not frozen, cxfreeze compatibility
@@ -39,6 +40,14 @@ def queue_games(tumblrjf,
     if not os.path.exists(imagepath):
         os.makedirs(imagepath)
 
+    # QBot and messages needed
+
+    qbot = json.load(open(qbotjf, "r"))
+
+    max_count = len(qbot["schedule"]["hours"])
+    message_count = len(qbot["messages"])
+    needed = max_count - message_count
+
     # Get new tweets from the tumblr queue
 
     tumblrq = json.load(open(tumblrjf, "r"))
@@ -49,7 +58,7 @@ def queue_games(tumblrjf,
         twitterq = {}
 
     newq = {k: v for k, v in tumblrq.items() if k not in twitterq}
-    newq = update_games(newq, limit=14)  # Fresh
+    newq = update_games(newq, limit=needed)  # Fresh
 
     # Save queued
 
@@ -60,9 +69,11 @@ def queue_games(tumblrjf,
 
     # Queue the new tweets on QBot
 
-    qbot = json.load(open(qbotjf, "r"))
-
     for key, val in newq.items():
+
+        if needed <= 0:
+            break
+        needed -= 1
 
         # Data
         win = "Windows " if val['windows'] else ""
@@ -102,6 +113,8 @@ def queue_games(tumblrjf,
     # Update
     with open(qbotjf, "w") as f:
         json.dump(qbot, f)
+
+    print(f"Queing done! ({round(time.time()-delta)}s)")
 
 
 if __name__ == "__main__":
