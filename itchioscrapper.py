@@ -111,7 +111,7 @@ def update_games(gamesdict, *, limit=10):
 
 
 def get_twitter(url):
-    """ Return the Twitter user name from an itch.io/user page. """
+    """ Return the first Twitter user name from any page. """
 
     headers = {
         'User-Agent':
@@ -120,10 +120,9 @@ def get_twitter(url):
     page = requests.get(url, headers=headers)
     soup = BeautifulSoup(page.content, "html.parser")
 
-    for data in soup.find_all("span", "link_group"):
-        for a in data.find_all("a"):
-            if "twitter.com" in a["href"]:
-                return a.text.strip()
+    for a in soup.find_all("a"):
+        if "twitter.com/" in a["href"]:
+            return "@" + a["href"].replace("/", " ").strip().split(" ")[-1]
 
     return None
 
@@ -156,6 +155,6 @@ if __name__ == "__main__":
     # with open("games.json", "w") as f:
     # json.dump(GAMES, f)
 
-    print(get_twitter("https://matnesis.itch.io/"))
+    print(get_twitter("https://sophieh.itch.io/"))
 
     print(f"Done! ({round(time.time()-DELTA)}s)")
