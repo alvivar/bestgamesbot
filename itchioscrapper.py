@@ -121,7 +121,7 @@ def get_twitter(url):
     soup = BeautifulSoup(page.content, "html.parser")
 
     for a in soup.find_all("a"):
-        if "twitter.com/" in a["href"]:
+        if "href" in a and "twitter.com/" in a["href"]:
             return "@" + a["href"].replace("/", " ").strip().split(" ")[-1]
 
     return None
