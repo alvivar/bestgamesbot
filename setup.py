@@ -8,7 +8,7 @@ from cx_Freeze import Executable, setup
 os.environ['TCL_LIBRARY'] = r'C:\Users\matnesis\Anaconda3\envs\junk\tcl\tcl8.6'
 os.environ['TK_LIBRARY'] = r'C:\Users\matnesis\Anaconda3\envs\junk\tcl\tk8.6'
 
-OPTIONS = {'build_exe': {'includes': ['idna.idnadata']}}
+OPTIONS = {'build_exe': {'includes': ['idna.idnadata', 'multiprocessing']}}
 
 EXECUTABLES = [Executable('tumblrqueuer.py', targetName='bestgamesbot.exe')]
 
