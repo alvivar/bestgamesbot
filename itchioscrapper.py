@@ -120,8 +120,8 @@ def get_twitter(url):
     page = requests.get(url, headers=headers)
     soup = BeautifulSoup(page.content, "html.parser")
 
-    for a in soup.find_all("a"):
-        if "href" in a and "twitter.com/" in a["href"]:
+    for a in soup.find_all("a", href=True):
+        if "twitter.com/" in a["href"]:
             return "@" + a["href"].replace("/", " ").strip().split(" ")[-1]
 
     return None
@@ -155,6 +155,6 @@ if __name__ == "__main__":
     # with open("games.json", "w") as f:
     # json.dump(GAMES, f)
 
-    print(get_twitter("https://sophieh.itch.io/"))
+    print(get_twitter("https://matnesis.itch.io/"))
 
     print(f"Done! ({round(time.time()-DELTA)}s)")
