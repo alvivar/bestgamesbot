@@ -7,8 +7,10 @@
 import json
 import os
 import re
+import shutil
 import sys
 import time
+import urllib
 
 import itchioscrapper
 import pytumblr
@@ -23,7 +25,7 @@ if __name__ == "__main__":
     DIR = os.path.normpath(
         os.path.dirname(
             sys.executable if getattr(sys, 'frozen', False) else __file__))
-    os.chdir(DIR)  # The current dir is the script one
+    os.chdir(DIR)  # The current dir is the script home
 
     # Files
     TOKENS_FILE = "tokens.json"
@@ -94,16 +96,36 @@ if __name__ == "__main__":
             'price'] else "Free to play"
         price = f"### [{price_title}]({k}) {platforms_title}"
 
+        # Image download
+
+        image = v['gif'] if v['gif'] else v['image']
+
+        name, ext = os.path.splitext(os.path.basename(image))
+        imagename = "".join(c
+                            for c in f"{v['author']}_{v['title']}_{name}{ext}"
+                            if c.isalnum() or c in ["-", "_", "."]).strip()
+
+        imagefile = os.path.normpath(os.path.join(DIR, "images", imagename))
+
+        if not os.path.isfile(imagefile):
+            with urllib.request.urlopen(image) as r, open(imagefile,
+                                                          'wb') as f:
+                shutil.copyfileobj(r, f)
+
+        # Queue
+
         result = API.create_photo(
             "bestgamesintheplanet",
             state="queue",
             tags=tags,
             format="markdown",
             caption=f"{title}{description}{price}",
-            source=f"{v['gif'] if v['gif'] else v['image']}")
+            data=imagefile
+            # source=f"{v['gif'] if v['gif'] else v['image']}"
+        )
 
         if result:
-            print(f"New: {k}")
+            print(f"New: {k} Downloaded: {image}")
             DONE[k] = v
             with open(TUMBLR_DONE_FILE, "w") as f:
                 json.dump(DONE, f)
