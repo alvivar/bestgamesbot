@@ -71,6 +71,7 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images"):
         needed -= 1
 
         # Data
+
         win = "Windows " if val['windows'] else ""
         mac = "Mac " if val['mac'] else ""
         lin = "Linux " if val['linux'] else ""
@@ -85,25 +86,33 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images"):
             'price'] else "Free to play"
 
         # The message
+
         text = f"{val['title']} ({val['twitter'] if val['twitter'] else val['author']})\n{price_title} {platforms_title} {key}"
         image = f"{val['gif'] if val['gif'] else val['image']}"
 
         # Download image
+
         name, ext = os.path.splitext(os.path.basename(image))
         imagename = "".join(
             c for c in f"{val['author']}_{val['title']}_{name}{ext}"
-            if c.isalnum() or c in ["_", "."]).strip()
+            if c.isalnum() or c in ["-", "_", "."]).strip()
 
         imagefile = os.path.normpath(os.path.join(cdir, imagepath, imagename))
 
-        with urllib.request.urlopen(image) as rp, open(imagefile, 'wb') as of:
-            print(f"Downloading: {val['title']} {image}")
-            shutil.copyfileobj(rp, of)
+        if not os.path.isfile(imagefile):
+            with urllib.request.urlopen(image) as r, open(imagefile,
+                                                          'wb') as f:
+                print(f"Downloading: {val['title']} {image}")
+                shutil.copyfileobj(r, f)
+        else:
+            print(f"Image found: {val['title']} {imagefile}")
 
         # Queue
+
         qbot['messages'].append({"text": text, "image": imagefile})
 
     # Update
+
     with open(qbotjf, "w") as f:
         json.dump(qbot, f)
 
