@@ -1,10 +1,10 @@
-""" This script queues
+"""
+    This script reads the current queued games and usin QBot, queues them again
+    for Twitter.
 
-This script reads the current queued games and usin QBot, queues them again
-for Twitter.
-
-But first it tries to update his data from itch.io, and it downloads the
-image/gif into a folder as this is needed for the tweet to work. """
+    But first it tries to update his data from itch.io, and it downloads the
+    image/gif into a folder as this is needed for the tweet to work.
+"""
 
 import json
 import os
