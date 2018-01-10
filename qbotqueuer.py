@@ -1,5 +1,5 @@
 """
-    This script reads the current queued games and usin QBot, queues them again
+    This script reads the current queued games and usin Qbot, queues them again
     for Twitter.
 
     But first it tries to update his data from itch.io, and it downloads the
@@ -17,11 +17,11 @@ from itchioscrapper import update_games
 
 
 def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images"):
-    """ Queue the tumblr scrapped data into QBot, keeping a registry. 'jf'
+    """ Queue the tumblr scrapped data into Qbot, keeping a registry. 'jf'
     parameters are mean to be json dictionary files. """
 
     delta = time.time()
-    print("Queing Tumblr into QBot...")
+    print("Queing Tumblr into Qbot...")
 
     # Frozen / not frozen, cxfreeze compatibility
 
@@ -35,7 +35,7 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images"):
     if not os.path.exists(imagepath):
         os.makedirs(imagepath)
 
-    # QBot and messages needed
+    # Qbot and messages needed
 
     qbot = json.load(open(qbotjf, "r"))
 
@@ -62,7 +62,7 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images"):
     with open(twitterjf, "w") as f:
         json.dump(twitterq, f)
 
-    # Queue the new tweets on QBot
+    # Queue the new tweets on Qbot
 
     for key, val in newq.items():
 

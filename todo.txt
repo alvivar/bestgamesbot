@@ -2,5 +2,5 @@
         TO DO
 
 
-    Introduce QBot
+    Introduce Qbot
     Instructions for everyone

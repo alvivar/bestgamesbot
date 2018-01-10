@@ -136,7 +136,7 @@ if __name__ == "__main__":
         f"{COUNT} game{'s' if COUNT != 1 else ''} found ({round(time.time()-DELTA)}s)\n"
     )
 
-    # Queue on QBot
+    # Queue on Qbot
     qbotqueuer.queue_games(TUMBLR_DONE_FILE, TWITTER_DONE_FILE, QBOT_FILE)
 
     input("\nOK?")
