@@ -2,5 +2,8 @@
         TO DO
 
 
+    Decent readme
+    Decent wait time cycle between request
+    Handle connection refused, etc
     Introduce Qbot
     Instructions for everyone
