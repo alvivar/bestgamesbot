@@ -2,6 +2,8 @@
         TO DO
 
 
+    Talk about setup.py
+    Change repo name to bestgamesbot
     Decent wait time cycle between request
     Handle connection refused, etc
 
