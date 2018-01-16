@@ -1,6 +1,6 @@
 # bestgamesbot
 
-## Bot that collects popular games from [Itch.io](https://itch.io/) and publish them in Twitter and Tumblr! <3
+## Bot that collects popular games from [Itch.io](https://itch.io/) <3 and publish them in Twitter and Tumblr!
 
 ### Details
 
@@ -9,7 +9,7 @@
 - **tumblrqueuer.py** queues posts on **Tumblr**, but this script is also the program main, calling both of them ^ on his execution
 - Check it out! **[@bestgamesbot](https://twitter.com/bestgamesbot)** and **[bestgamesintheplanet.tumblr](https://bestgamesintheplanet.tumblr.com/)**
 
-### Why are doing this? Is this spam? Are you being careful with the scrap?
+### Why are you doing this?
 
 I love **[Itch.io](https://itch.io/)** and his community, I just want a eternal
 collection of their popular games to get inspired when I feel like it.
