@@ -11,8 +11,8 @@
 
 ### Why are doing this? Is this spam? Are you being careful with the scrap?
 
-I love **[Itch.io](https://itch.io/)** and his community, I just want an
-eternal collection of their popular games to get inspired when I feel like it.
+I love **[Itch.io](https://itch.io/)** and his community, I just want a eternal
+collection of their popular games to get inspired when I feel like it.
 
 As time passed by, some cool games get buried and forgotten. I guess I want to
 meet them all scrolling Twitter or Tumblr. Supporting creators by collecting
