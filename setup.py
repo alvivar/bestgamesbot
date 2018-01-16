@@ -18,6 +18,6 @@ setup(
     name='bestgamesbot',
     version='0.1',
     description=
-    "Bot that collects popular games from [Itch.io and publish them in Twitter and Tumblr!",
+    "Bot that collects popular games from Itch.io and publish them in Twitter and Tumblr!",
     executables=EXECUTABLES,
     options=OPTIONS)
