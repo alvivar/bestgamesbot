@@ -1,5 +1,7 @@
-""" Create an .exe with cx_Freeze, just call 'python setup.py build'. You need
-to change the TCL, TK environment variables below to your own. """
+"""
+    Create an .exe with cx_Freeze, just call 'python setup.py build'. You need
+    to change the TCL, TK environment variables below to your own.
+"""
 
 import os
 
@@ -15,6 +17,7 @@ EXECUTABLES = [Executable('tumblrqueuer.py', targetName='bestgamesbot.exe')]
 setup(
     name='bestgamesbot',
     version='0.1',
-    description="bestgamesintheplanet [Bot]",
+    description=
+    "Bot that collects popular games from [Itch.io and publish them in Twitter and Tumblr!",
     executables=EXECUTABLES,
     options=OPTIONS)
