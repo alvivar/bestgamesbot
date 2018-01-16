@@ -1,4 +1,6 @@
-""" Itch.io scrapper that downloads popular games data. """
+"""
+    Itch.io scrapper.
+"""
 
 import json
 import os
@@ -11,13 +13,17 @@ from bs4 import BeautifulSoup
 
 
 def chunker(seq, size):
-    """ Zip a list into chunks. """
+    """
+        Zip a list into chunks.
+    """
     return [seq[pos:pos + size] for pos in range(0, len(seq), size)]
 
 
 def get_games(url):
-    """ Returns a dictionary with all the games data from the games directory
-    or search result page on itch.io. """
+    """
+        Returns a dictionary with all the games data from the games directory
+        or search result page on itch.io.
+    """
 
     headers = {
         'User-Agent':
@@ -27,18 +33,18 @@ def get_games(url):
     soup = BeautifulSoup(page.content, "html.parser")
 
     games = {}
-    for data in soup.find_all("div", "game_cell"):
+    for data in soup.find_all('div', 'game_cell'):
 
-        url = data.find("a", "thumb_link")['href']
-        title = data.find("div", "game_title").a.text
-        description = data.find("div", "game_text")
-        author = data.find("div", "game_author").a.text
-        author_url = data.find("div", "game_author").a['href']
+        url = data.find('a', 'thumb_link')['href']
+        title = data.find('div', 'game_title').a.text
+        description = data.find('div', 'game_text')
+        author = data.find('div', 'game_author').a.text
+        author_url = data.find('div', 'game_author').a['href']
         twitter = get_twitter(author_url)
-        price = data.find("div", "price_value")
+        price = data.find('div', 'price_value')
 
-        image = data.find("div", "game_thumb")
-        if image.has_attr("data-background_image"):
+        image = data.find('div', 'game_thumb')
+        if image.has_attr('data-background_image'):
             # Normal itch.io browse
             image = image['data-background_image']
         else:
@@ -46,13 +52,13 @@ def get_games(url):
             image = image['style'].split("('")[1].split("')")[0] if image[
                 'style'] else False
 
-        gif = data.find("div", "gif_overlay")
+        gif = data.find('div', 'gif_overlay')
 
-        windows = data.find("span", "icon-windows8")
-        mac = data.find("span", "icon-apple")
-        linux = data.find("span", "icon-tux")
-        web = data.find("span", "web_flag")
-        android = data.find("span", "icon-android")
+        windows = data.find('span', 'icon-windows8')
+        mac = data.find('span', 'icon-apple')
+        linux = data.find('span', 'icon-tux')
+        web = data.find('span', 'web_flag')
+        android = data.find('span', 'icon-android')
 
         games[url] = {
             'title': title,
@@ -75,7 +81,9 @@ def get_games(url):
 
 
 def find_games(search, *, filterkeys=[], url="https://itch.io/search?q="):
-    """ Search and return games, can also filter the result by key. """
+    """
+        Search and return games, can also filter the result by key.
+    """
     clean_search = urllib.parse.quote_plus(search)
     games = get_games(f"{url}{clean_search}")
 
@@ -90,8 +98,10 @@ def find_games(search, *, filterkeys=[], url="https://itch.io/search?q="):
 
 
 def update_games(gamesdict, *, limit=10):
-    """ Read a dictionary that contains itch.io games urls as keys, and return
-    another dictionary with the game data updated. """
+    """
+        Read a dictionary that contains itch.io games urls as keys, and return
+        another dictionary with the game data updated.
+    """
 
     updated = {}
     for key, val in gamesdict.items():
@@ -111,7 +121,9 @@ def update_games(gamesdict, *, limit=10):
 
 
 def get_twitter(url):
-    """ Return the first Twitter user name from any page. """
+    """
+        Return the first Twitter user name from any page.
+    """
 
     headers = {
         'User-Agent':
@@ -121,8 +133,8 @@ def get_twitter(url):
     soup = BeautifulSoup(page.content, "html.parser")
 
     for a in soup.find_all("a", href=True):
-        if "twitter.com/" in a["href"]:
-            return "@" + a["href"].replace("/", " ").strip().split(" ")[-1]
+        if "twitter.com/" in a['href']:
+            return "@" + a['href'].replace('/', ' ').strip().split()[-1]
 
     return None
 
@@ -137,9 +149,9 @@ if __name__ == "__main__":
             sys.executable if getattr(sys, 'frozen', False) else __file__))
     os.chdir(DIR)
 
-    # Tests
+    # Test stuff
 
-    # GAMES = get_games("https://itch.io/games")
+    GAMES = get_games("https://itch.io/games")
 
     # GAMES = find_games(
     #     "Bum Bag Bangin'",
@@ -152,9 +164,9 @@ if __name__ == "__main__":
 
     # GAMES = update_games(OLDGAMES)
 
-    # with open("games.json", "w") as f:
-    # json.dump(GAMES, f)
+    with open("games.json", "w") as f:
+        json.dump(GAMES, f)
 
-    print(get_twitter("https://matnesis.itch.io/"))
+    # print(get_twitter("https://matnesis.itch.io/"))
 
     print(f"Done! ({round(time.time()-DELTA)}s)")
