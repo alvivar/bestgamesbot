@@ -2,8 +2,11 @@
         TO DO
 
 
-    Decent readme
     Decent wait time cycle between request
     Handle connection refused, etc
-    Introduce Qbot
-    Instructions for everyone
+
+
+    2018/01/15 07:22 pm
+    x Instructions for everyone
+    x Introduce Qbot
+    x Decent readme
