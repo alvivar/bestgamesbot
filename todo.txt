@@ -1,12 +1,14 @@
 
         TO DO
 
-    Rename repo to bestgamesbot
-    Talk about setup.py on readme
-    Change repo name to bestgamesbot
-    Decent wait time cycle between request
+
     Handle connection refused, etc
 
+
+    2018/01/17 12:21 am
+    x Decent wait time cycle between request
+    x Talk about setup.py on readme
+    x Rename repo to bestgamesbot
 
     2018/01/15 07:22 pm
     x Instructions for everyone
