@@ -2,8 +2,8 @@
     This script reads the current queued games on Tumblr and usin Qbot, queues
     them again for Twitter.
 
-    But first it tries to update the games again, downloading the image/gif
-    into a folder as this is needed for the tweet to work.
+    But first it updates the games again, downloading the image/gif into a
+    folder as this is needed for the tweet to work.
 """
 
 import json
