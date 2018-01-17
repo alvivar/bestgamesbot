@@ -1,9 +1,9 @@
 """
-    This script reads the current queued games and usin Qbot, queues them again
-    for Twitter.
+    This script reads the current queued games on Tumblr and usin Qbot, queues
+    them again for Twitter.
 
-    But first it tries to update his data from itch.io, and it downloads the
-    image/gif into a folder as this is needed for the tweet to work.
+    But first it tries to update the games again, downloading the image/gif
+    into a folder as this is needed for the tweet to work.
 """
 
 import json
@@ -16,9 +16,11 @@ import urllib.request
 from itchioscrapper import update_games
 
 
-def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images"):
-    """ Queue the tumblr scrapped data into Qbot, keeping a registry. 'jf'
-    parameters are mean to be json dictionary files. """
+def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
+    """
+        Queue the tumblr scrapped data into Qbot, keeping a registry. 'jf'
+        parameters are mean to be json dictionary files.
+    """
 
     delta = time.time()
     print("Queing Tumblr into Qbot...")
@@ -104,6 +106,7 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images"):
                                                           'wb') as f:
                 print(f"Downloading: {val['title']} {image}")
                 shutil.copyfileobj(r, f)
+                time.sleep(rest)
         else:
             print(f"Image found: {val['title']} {imagefile}")
 

@@ -1,5 +1,6 @@
 """
-    Itch.io scrapper.
+    Itch.io data scrapper, including games directory, search and twitter
+    username from the profile.
 """
 
 import json
@@ -19,7 +20,7 @@ def chunker(seq, size):
     return [seq[pos:pos + size] for pos in range(0, len(seq), size)]
 
 
-def get_games(url):
+def get_games(url, rest=5):
     """
         Returns a dictionary with all the games data from the games directory
         or search result page on itch.io.
@@ -30,9 +31,10 @@ def get_games(url):
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
     }
     page = requests.get(url, headers=headers)
-    soup = BeautifulSoup(page.content, "html.parser")
+    time.sleep(rest)
 
     games = {}
+    soup = BeautifulSoup(page.content, "html.parser")
     for data in soup.find_all('div', 'game_cell'):
 
         url = data.find('a', 'thumb_link')['href']
@@ -120,7 +122,7 @@ def update_games(gamesdict, *, limit=10):
     return updated
 
 
-def get_twitter(url):
+def get_twitter(url, rest=5):
     """
         Return the first Twitter user name from any page.
     """
@@ -130,8 +132,9 @@ def get_twitter(url):
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
     }
     page = requests.get(url, headers=headers)
-    soup = BeautifulSoup(page.content, "html.parser")
+    time.sleep(rest)
 
+    soup = BeautifulSoup(page.content, "html.parser")
     for a in soup.find_all("a", href=True):
         if "twitter.com/" in a['href']:
             return "@" + a['href'].replace('/', ' ').strip().split()[-1]
