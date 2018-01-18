@@ -2,6 +2,7 @@
         TO DO
 
 
+    Tumblr tokens file needs a better name
     Handle connection refused, etc
 
 
