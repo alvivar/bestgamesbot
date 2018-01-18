@@ -38,8 +38,8 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
         os.makedirs(imagepath)
 
     # Qbot and messages needed
-
-    qbot = json.load(open(qbotjf, "r"))
+    with open(qbotjf, "r") as f:
+        qbot = json.load(f)
 
     max_count = len(qbot["schedule"]["hours"])
     message_count = len(qbot["messages"])
@@ -50,7 +50,8 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
     tumblrq = json.load(open(tumblrjf, "r"))
 
     try:
-        twitterq = json.load(open(twitterjf, "r"))
+        with open(twitterjf, "r") as f:
+            twitterq = json.load(f)
     except (IOError, ValueError):
         twitterq = {}
 
