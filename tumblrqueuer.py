@@ -12,7 +12,7 @@ import sys
 import time
 import urllib
 
-import itchioscrapper
+from itchioscrapper import get_games
 import pytumblr
 import qbotqueuer
 
@@ -49,7 +49,6 @@ if __name__ == "__main__":
     if not TOKENS['consumer_key']:
         print(f"I need your Tumblr API tokens!\n"
               f"Write them in {TOKENS_FILE} and try again.")
-        input("OK?")
         sys.exit(0)
 
     # Tumblr connection
@@ -62,12 +61,13 @@ if __name__ == "__main__":
 
     # Already queued games
     try:
-        DONE = json.load(open(TUMBLR_DONE_FILE, 'r'))
+        with open(TUMBLR_DONE_FILE, 'r') as f:
+            DONE = json.load(f)
     except (IOError, ValueError):
         DONE = {}
 
     # Queue new games
-    GAMES = itchioscrapper.get_games("https://itch.io/games")
+    GAMES = get_games("https://itch.io/games")
     GAMES = {k: v for k, v in GAMES.items() if k not in DONE}
 
     # The game url is the 'k'ey
