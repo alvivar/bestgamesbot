@@ -7,7 +7,7 @@ import json
 import os
 import sys
 import time
-import urllib.parse
+from urllib.parse import quote_plus, urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -44,6 +44,8 @@ def get_games(url, rest=5):
         author_url = data.find('div', 'game_author').a['href']
         twitter = get_twitter(author_url)
         price = data.find('div', 'price_value')
+
+        print(f"Found: {title} | {url}")
 
         image = data.find('div', 'game_thumb')
         if image.has_attr('data-background_image'):
@@ -86,7 +88,7 @@ def find_games(search, *, filterkeys=[], url="https://itch.io/search?q="):
     """
         Search and return games, can also filter the result by key.
     """
-    clean_search = urllib.parse.quote_plus(search)
+    clean_search = quote_plus(search)
     games = get_games(f"{url}{clean_search}")
 
     if filterkeys:
@@ -137,7 +139,9 @@ def get_twitter(url, rest=5):
     soup = BeautifulSoup(page.content, "html.parser")
     for a in soup.find_all("a", href=True):
         if "twitter.com/" in a['href']:
-            return "@" + a['href'].replace('/', ' ').strip().split()[-1]
+            url = urlparse(a['href'])
+            handler = url.path.replace('/', ' ').strip().split()[0]
+            return "@" + handler.lower()
 
     return None
 
@@ -170,6 +174,6 @@ if __name__ == "__main__":
     with open("games.json", "w") as f:
         json.dump(GAMES, f)
 
-    # print(get_twitter("https://matnesis.itch.io/"))
+    print(get_twitter("https://matnesis.itch.io/"))
 
-    print(f"Done! ({round(time.time()-DELTA)}s)")
+    print(f"\nDone! ({round(time.time()-DELTA)}s)")
