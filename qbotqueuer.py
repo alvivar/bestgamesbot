@@ -56,6 +56,7 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
         twitterq = {}
 
     newq = {k: v for k, v in tumblrq.items() if k not in twitterq}
+    print(f"Found {len(newq)} new games (Tumblr -> Twitter)")
     newq = update_games(newq, limit=needed)  # Fresh
 
     # Save queued
