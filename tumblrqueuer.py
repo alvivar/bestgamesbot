@@ -111,6 +111,7 @@ if __name__ == "__main__":
             with urllib.request.urlopen(image) as r, open(imagefile,
                                                           'wb') as f:
                 shutil.copyfileobj(r, f)
+                time.sleep(5)  # Decent rest
 
         # Queue
 
@@ -125,7 +126,8 @@ if __name__ == "__main__":
         )
 
         if result:
-            print(f"New: {k} Downloaded: {image}")
+            print(f"New: {k} ")
+            print(f"Downloaded: {image}")
             DONE[k] = v
             with open(TUMBLR_DONE_FILE, "w") as f:
                 json.dump(DONE, f)
