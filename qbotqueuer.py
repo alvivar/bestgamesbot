@@ -13,7 +13,7 @@ import sys
 import time
 import urllib.request
 
-from itchioscrapper import update_games
+from itchioscrapper import update_games, update_games_twitter
 
 
 def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
@@ -47,17 +47,22 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
 
     # Get new tweets from the tumblr queue
 
-    tumblrq = json.load(open(tumblrjf, "r"))
+    try:
+        with open(tumblrjf, 'r') as f:
+            tumblrq = json.load(f)
+    except (IOError, ValueError):
+        tumblrq = {}
 
     try:
-        with open(twitterjf, "r") as f:
+        with open(twitterjf, 'r') as f:
             twitterq = json.load(f)
     except (IOError, ValueError):
         twitterq = {}
 
     newq = {k: v for k, v in tumblrq.items() if k not in twitterq}
-    print(f"Found {len(newq)} new games (Tumblr -> Twitter)")
-    newq = update_games(newq, limit=needed)  # Fresh
+    print(
+        f"Searching for {needed} new games in {len(newq)} (Tumblr -> Twitter)")
+    newq = update_games_twitter(update_games(newq, limit=needed))  # Fresh
 
     # Save queued
 
@@ -106,11 +111,11 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
         if not os.path.isfile(imagefile):
             with urllib.request.urlopen(image) as r, open(imagefile,
                                                           'wb') as f:
-                print(f"Downloading: {val['title']} {image}")
+                print(f"Downloading {val['title']} {image}")
                 shutil.copyfileobj(r, f)
                 time.sleep(rest)
         else:
-            print(f"Image found: {val['title']} {imagefile}")
+            print(f"Image found {val['title']} {imagefile}")
 
         # Queue
 
