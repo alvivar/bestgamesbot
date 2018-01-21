@@ -71,6 +71,7 @@ if __name__ == "__main__":
     GAMES = {k: v for k, v in GAMES.items() if k not in DONE}
 
     # The game url is the 'k'ey
+    print("Looking for new games...")
     for k, v in GAMES.items():
 
         win = "Windows " if v['windows'] else ""
