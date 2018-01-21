@@ -12,9 +12,9 @@ import sys
 import time
 import urllib
 
-from itchioscrapper import get_games
 import pytumblr
 import qbotqueuer
+from itchioscrapper import get_games
 
 if __name__ == "__main__":
 
