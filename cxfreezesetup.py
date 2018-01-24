@@ -1,6 +1,6 @@
 """
-    Create an .exe with cx_Freeze, just call 'python setup.py build'. You need
-    to change the TCL, TK environment variables below to your own.
+    Run 'python cxfreezesetup.py build' to create a executable with cx_Freeze.
+    You need to change the TCL, TK environment variables below to your own.
 """
 
 import os
