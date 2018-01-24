@@ -141,5 +141,3 @@ if __name__ == "__main__":
 
     # Queue on Qbot
     qbotqueuer.queue_games(TUMBLR_DONE_FILE, TWITTER_DONE_FILE, QBOT_FILE)
-
-    input("\nOK?")
