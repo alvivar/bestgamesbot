@@ -144,7 +144,7 @@ def get_twitter(url, rest=5):
         if "twitter.com/" in a['href']:
             url = urlparse(a['href'])
             handler = url.path.replace('/', ' ').strip().split()[0]
-            return "@" + handler.lower()
+            return handler.lower().replace('@', '')
 
     return False
 
