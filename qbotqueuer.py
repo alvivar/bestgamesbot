@@ -11,7 +11,7 @@ import os
 import shutil
 import sys
 import time
-import urllib.request
+from urllib.request import Request, urlopen
 
 from itchioscrapper import update_games, update_games_twitter
 
@@ -96,7 +96,7 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
 
         # The message
 
-        text = f"{val['title']} ({val['twitter'] if val['twitter'] else val['author']})\n{price_title} {platforms_title} {key}"
+        text = f"{val['title']} ('@' + {val['twitter'] if val['twitter'] else val['author']})\n{price_title} {platforms_title} {key}"
         image = f"{val['gif'] if val['gif'] else val['image']}"
 
         # Download image
@@ -109,8 +109,11 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
         imagefile = os.path.normpath(os.path.join(cdir, imagepath, imagename))
 
         if not os.path.isfile(imagefile):
-            with urllib.request.urlopen(image) as r, open(imagefile,
-                                                          'wb') as f:
+            rq = Request(image).add_header(
+                'User-Agent',
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
+            )
+            with urlopen(rq) as r, open(imagefile, 'wb') as f:
                 print(f"Downloading {val['title']} {image}")
                 shutil.copyfileobj(r, f)
                 time.sleep(rest)
@@ -126,7 +129,7 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
     with open(qbotjf, "w") as f:
         json.dump(qbot, f)
 
-    print(f"Queing done! ({round(time.time()-delta)}s)")
+    print(f"\nQueing done! ({round(time.time()-delta)}s)")
 
 
 if __name__ == "__main__":
