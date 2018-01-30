@@ -10,7 +10,7 @@ import re
 import shutil
 import sys
 import time
-import urllib
+from urllib.request import Request, urlopen
 
 import pytumblr
 import qbotqueuer
@@ -109,26 +109,33 @@ if __name__ == "__main__":
         imagefile = os.path.normpath(os.path.join(DIR, "images", imagename))
 
         if not os.path.isfile(imagefile):
-            with urllib.request.urlopen(image) as r, open(imagefile,
-                                                          'wb') as f:
+            rq = Request(image).add_header(
+                'User-Agent',
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
+            )
+            with urlopen(rq) as r, open(imagefile, 'wb') as f:
                 shutil.copyfileobj(r, f)
                 time.sleep(5)  # Decent rest
 
         # Queue
 
-        result = API.create_photo(
-            "bestgamesintheplanet",
-            state="queue",
-            tags=tags,
-            format="markdown",
-            caption=f"{title}{description}{price}",
-            data=imagefile
-            # source=f"{v['gif'] if v['gif'] else v['image']}"
-        )
+        try:
+            result = API.create_photo(
+                "bestgamesintheplanet",
+                state="queue",
+                tags=tags,
+                format="markdown",
+                caption=f"{title}{description}{price}",
+                data=imagefile
+                # source=f"{v['gif'] if v['gif'] else v['image']}"
+            )
+        except ConnectionError:
+            result = False
+            print(f"ConnectionError {imagefile}")
 
         if result:
-            print(f"New: {k} ")
-            print(f"Downloaded: {image}")
+            print(f"\nNew {k} ")
+            print(f"Downloaded {image}")
             DONE[k] = v
             with open(TUMBLR_DONE_FILE, "w") as f:
                 json.dump(DONE, f)
@@ -136,7 +143,7 @@ if __name__ == "__main__":
     # Info log
     COUNT = len(GAMES)
     print(
-        f"{COUNT} game{'s' if COUNT != 1 else ''} found ({round(time.time()-DELTA)}s)\n"
+        f"\n{COUNT} game{'s' if COUNT != 1 else ''} found ({round(time.time()-DELTA)}s)\n"
     )
 
     # Queue on Qbot
