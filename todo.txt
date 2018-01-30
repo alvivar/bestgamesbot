@@ -6,6 +6,10 @@
     Handle connection refused, etc
 
 
+    2018/01/30 05:25 pm
+    x ConnectionError detected when publishing to Tumblr
+    x Images are downloaded using headers
+
     2018/01/17 12:21 am
     x Decent wait time cycle between request
     x Talk about setup.py on readme
