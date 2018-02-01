@@ -109,11 +109,7 @@ if __name__ == "__main__":
         imagefile = os.path.normpath(os.path.join(DIR, "images", imagename))
 
         if not os.path.isfile(imagefile):
-            rq = Request(image).add_header(
-                'User-Agent',
-                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
-            )
-            with urlopen(rq) as r, open(imagefile, 'wb') as f:
+            with urlopen(image) as r, open(imagefile, 'wb') as f:
                 shutil.copyfileobj(r, f)
                 time.sleep(5)  # Decent rest
 

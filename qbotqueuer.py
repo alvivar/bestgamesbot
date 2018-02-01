@@ -23,7 +23,7 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
     """
 
     delta = time.time()
-    print("Queing Tumblr into Qbot...")
+    print("Queing Tumblr into Qbot...\n")
 
     # Frozen / not frozen, cxfreeze compatibility
 
@@ -109,11 +109,7 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
         imagefile = os.path.normpath(os.path.join(cdir, imagepath, imagename))
 
         if not os.path.isfile(imagefile):
-            rq = Request(image).add_header(
-                'User-Agent',
-                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
-            )
-            with urlopen(rq) as r, open(imagefile, 'wb') as f:
+            with urlopen(image) as r, open(imagefile, 'wb') as f:
                 print(f"Downloading {val['title']} {image}")
                 shutil.copyfileobj(r, f)
                 time.sleep(rest)
@@ -124,15 +120,17 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
 
         qbot['messages'].append({"text": text, "image": imagefile})
 
-    # Update
+        # Update
 
-    with open(qbotjf, "w") as f:
-        json.dump(qbot, f)
+        with open(qbotjf, "w") as f:
+            json.dump(qbot, f)
 
     print(f"\nQueing done! ({round(time.time()-delta)}s)")
 
 
 if __name__ == "__main__":
+
+    # Test
 
     TUMBLRJSON = "tumblr_done.json"
     TWITTERJSON = "twitter_done.json"
