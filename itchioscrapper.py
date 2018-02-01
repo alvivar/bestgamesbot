@@ -156,12 +156,12 @@ def update_games_twitter(gamesdict):
     """
     update = {}
     for k, v in gamesdict.items():
-        twitter = get_twitter(k)
+        twitter = get_twitter(v['author_url'])
         update[k] = v
         update[k]['twitter'] = twitter
 
         if twitter:
-            print(f"Found {twitter} in {k}")
+            print(f"Found {twitter} in {v['author_url']}")
 
     return update
 
@@ -178,7 +178,7 @@ if __name__ == "__main__":
 
     # Test stuff
 
-    GAMES = get_games("https://itch.io/games")
+    # GAMES = get_games("https://itch.io/games")
 
     # GAMES = find_games(
     #     "Bum Bag Bangin'",
@@ -191,9 +191,9 @@ if __name__ == "__main__":
 
     # GAMES = update_games(OLDGAMES)
 
-    with open("games.json", "w") as f:
-        json.dump(GAMES, f)
+    # with open("games.json", "w") as f:
+    #     json.dump(GAMES, f)
 
-    print(get_twitter("https://matnesis.itch.io/"))
+    # print(get_twitter("https://egordorichev.itch.io/"))
 
     print(f"\nDone! ({round(time.time()-DELTA)}s)")
