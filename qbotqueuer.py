@@ -96,7 +96,7 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
 
         # The message
 
-        text = f"{val['title']} ('@' + {val['twitter'] if val['twitter'] else val['author']})\n{price_title} {platforms_title} {key}"
+        text = f"{val['title']} ({'@' + val['twitter'] if val['twitter'] else val['author']})\n{price_title} {platforms_title} {key}"
         image = f"{val['gif'] if val['gif'] else val['image']}"
 
         # Download image
