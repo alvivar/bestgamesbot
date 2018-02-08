@@ -136,6 +136,16 @@ if __name__ == "__main__":
             with open(TUMBLR_DONE_FILE, "w") as f:
                 json.dump(DONE, f)
 
+            # A long wait cycle to avoid being greedy
+            wait = 2 * 60
+            while wait > 0:
+                sys.stdout.write(f"\rWaiting {wait} seconds")
+                sys.stdout.flush()
+                time.sleep(1)
+                wait -= 1
+            sys.stdout.write(f"\r{' ' * 32}")
+            sys.stdout.flush()
+
     # Info log
     COUNT = len(GAMES)
     print(
