@@ -16,10 +16,19 @@ from urllib.request import Request, urlopen
 from itchioscrapper import update_games, update_games_twitter
 
 
-def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
+def queue_games(tumblr_done_file,
+                tumblr_error_file,
+                twitter_done_file,
+                qbot_file,
+                *,
+                imagepath="images",
+                rest=5):
     """
         Queue the tumblr scrapped data into Qbot, keeping a registry. 'jf'
         parameters are mean to be json dictionary files.
+
+        TODO It would be sexier if this function receives data instead of the
+        files, but I needed a fast solution.
     """
 
     delta = time.time()
@@ -27,10 +36,10 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
 
     # Frozen / not frozen, cxfreeze compatibility
 
-    cdir = os.path.normpath(
+    scriptdir = os.path.normpath(
         os.path.dirname(
             sys.executable if getattr(sys, 'frozen', False) else __file__))
-    os.chdir(cdir)  # The current dir is the script home
+    os.chdir(scriptdir)  # The current dir is the script home
 
     # Files
 
@@ -38,7 +47,7 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
         os.makedirs(imagepath)
 
     # Qbot and messages needed
-    with open(qbotjf, "r") as f:
+    with open(qbot_file, "r") as f:
         qbot = json.load(f)
 
     max_count = len(qbot["schedule"]["hours"])
@@ -48,27 +57,34 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
     # Get new tweets from the tumblr queue
 
     try:
-        with open(tumblrjf, 'r') as f:
+        with open(tumblr_done_file, 'r') as f:
             tumblrq = json.load(f)
     except (IOError, ValueError):
         tumblrq = {}
 
     try:
-        with open(twitterjf, 'r') as f:
+        with open(tumblr_error_file, 'r') as f:
+            tumblrerrorq = json.load(f)
+    except (IOError, ValueError):
+        tumblrerrorq = {}
+
+    try:
+        with open(twitter_done_file, 'r') as f:
             twitterq = json.load(f)
     except (IOError, ValueError):
         twitterq = {}
 
+    tumblrq = {**tumblrq, **tumblrerrorq}  # Merge with errors
     newq = {k: v for k, v in tumblrq.items() if k not in twitterq}
-    print(
-        f"Searching for {needed} new games in {len(newq)} (Tumblr -> Twitter)")
+
+    print(f"Searching {needed} new games in {len(newq)} (Tumblr -> Twitter)")
     newq = update_games_twitter(update_games(newq, limit=needed))  # Fresh
 
     # Save queued
 
     twitterq = {**twitterq, **newq}  # Old + new twitter queued
 
-    with open(twitterjf, "w") as f:
+    with open(twitter_done_file, "w") as f:
         json.dump(twitterq, f)
 
     # Queue the new tweets on Qbot
@@ -106,7 +122,8 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
             c for c in f"{val['author']}_{val['title']}_{name}{ext}"
             if c.isalnum() or c in ["-", "_", "."]).strip()
 
-        imagefile = os.path.normpath(os.path.join(cdir, imagepath, imagename))
+        imagefile = os.path.normpath(
+            os.path.join(scriptdir, imagepath, imagename))
 
         if not os.path.isfile(imagefile):
             with urlopen(image) as r, open(imagefile, 'wb') as f:
@@ -122,7 +139,7 @@ def queue_games(tumblrjf, twitterjf, qbotjf, *, imagepath="images", rest=5):
 
         # Update
 
-        with open(qbotjf, "w") as f:
+        with open(qbot_file, "w") as f:
             json.dump(qbot, f)
 
     print(f"\nQueing done! ({round(time.time()-delta)}s)")
@@ -132,8 +149,10 @@ if __name__ == "__main__":
 
     # Test
 
-    TUMBLRJSON = "tumblr_done.json"
-    TWITTERJSON = "twitter_done.json"
-    QBOTJSON = r"C:\adros\code\python\bestgamesintheplanet\build\exe.win-amd64-3.6\qbot.json"
+    TUMBLR_DONE_FILE = "tumblr_done.json"
+    TUMBLR_ERROR_FILE = "tumblr_error.json"
+    TWITTER_DONE_FILE = "twitter_done.json"
+    QBOT_FILE = r"C:\adros\code\python\bestgamesintheplanet\build\exe.win-amd64-3.6\qbot.json"
 
-    queue_games(TUMBLRJSON, TWITTERJSON, QBOTJSON)
+    queue_games(TUMBLR_DONE_FILE, TUMBLR_ERROR_FILE, TWITTER_DONE_FILE,
+                QBOT_FILE)
