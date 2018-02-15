@@ -30,6 +30,7 @@ if __name__ == "__main__":
     # Files
     TOKENS_FILE = "tokens.json"
     TUMBLR_DONE_FILE = "tumblr_done.json"
+    TUMBLR_ERROR_FILE = "tumblr_error.json"
     TWITTER_DONE_FILE = "twitter_done.json"
     QBOT_FILE = "qbot.json"
 
@@ -58,6 +59,13 @@ if __name__ == "__main__":
         TOKENS['oauth_token'],
         TOKENS['oauth_secret'],
     )
+
+    # File to save entries that cause exceptions in Tumblr
+    try:
+        with open(TUMBLR_ERROR_FILE, 'r') as f:
+            ERROR = json.load(f)
+    except (IOError, ValueError):
+        ERROR = {}
 
     # Already queued games
     try:
@@ -127,14 +135,19 @@ if __name__ == "__main__":
             )
         except Exception as e:  # Unsafe?
             result = False
-            print(f"Error: {e}")
+            print(f"\nError: {e}")
             print(f"{k} {imagefile}")
+
+            ERROR[k] = v  # Log
+            with open(TUMBLR_ERROR_FILE, 'w') as f:
+                json.dump(ERROR, f)
 
         if result:
             print(f"\nNew {k} ")
             print(f"Downloaded {image}")
-            DONE[k] = v
-            with open(TUMBLR_DONE_FILE, "w") as f:
+
+            DONE[k] = v  # Log
+            with open(TUMBLR_DONE_FILE, 'w') as f:
                 json.dump(DONE, f)
 
             # A wait cycle to avoid being greedy
@@ -156,4 +169,5 @@ if __name__ == "__main__":
     )
 
     # Queue on Qbot
-    qbotqueuer.queue_games(TUMBLR_DONE_FILE, TWITTER_DONE_FILE, QBOT_FILE)
+    qbotqueuer.queue_games(TUMBLR_DONE_FILE, TUMBLR_ERROR_FILE,
+                           TWITTER_DONE_FILE, QBOT_FILE)
